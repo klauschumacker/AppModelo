@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "font-awesome@6.0.0",
+      "destination": "wwwroot/lib/font-awesome/font-awesome/"
+    }
+  ]
+}
