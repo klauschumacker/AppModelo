@@ -1,6 +1,9 @@
+using DevT800.UI.Site.Data;
+using DevT800.UI.Site.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +27,9 @@ namespace DevT800.UI.Site
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<BancoContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DataBase")));
+            services.AddScoped<IContatoRepository, ContatoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +60,7 @@ namespace DevT800.UI.Site
 
                 endpoints.MapControllerRoute(
                     name: "areas",
-                    pattern: "{area=exists}/{controller=Cadastro}/{action=Index}/{id?}");
+                    pattern: "{produtos=exists}/{controllers=Cadastro}/{action=Index}/{id?}");
             });
         }
     }
