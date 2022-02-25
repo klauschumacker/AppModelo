@@ -6,3 +6,7 @@
 $(document).ready(function () {
     //alert("teste");
 });
+
+$('.close-alert').click(function () {
+    $('.alert').hide('hide');
+});

@@ -10,9 +10,15 @@ namespace DevT800.UI.Site.Repository
     public class ContatoRepository : IContatoRepository
     {
         private readonly BancoContext _bancoContext;
+
         public ContatoRepository(BancoContext bancoContext)
         {
-            _bancoContext = bancoContext;
+            this._bancoContext = bancoContext;
+        }
+
+        public ContatoModel ListarPorId(int id)
+        {
+            return _bancoContext.Contatos.FirstOrDefault(x => x.Id == id);
         }
 
         public List<ContatoModel> BuscarTodos()
@@ -28,7 +34,35 @@ namespace DevT800.UI.Site.Repository
             return contato;
             // gravar no banco de dados
         }
-
         
+
+        public ContatoModel Atualizar(ContatoModel contato)
+        {
+            ContatoModel contatoDB = ListarPorId(contato.Id);
+
+            if (contatoDB == null) throw new Exception("Houve um erro na atualizacao do contato!");
+
+            contatoDB.Nome = contato.Nome;
+            contatoDB.Email = contato.Email;
+            contatoDB.Celular = contato.Celular;
+
+            _bancoContext.Contatos.Update(contatoDB);
+            _bancoContext.SaveChanges();
+
+            return contatoDB;
+        }
+
+
+        public bool Excluir(int id)
+        {
+            ContatoModel contatoDB = ListarPorId(id);
+
+            if (contatoDB == null) throw new Exception("Houve um erro na delexao do contato!");
+
+            _bancoContext.Contatos.Remove(contatoDB);
+            _bancoContext.SaveChanges();
+
+            return true;
+        }
     }
 }

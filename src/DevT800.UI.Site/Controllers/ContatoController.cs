@@ -26,22 +26,93 @@ namespace DevT800.UI.Site.Controllers
             return View();
         }
 
-        public IActionResult Editar()
+        public IActionResult Editar(int id)
         {
-            return View();
+            ContatoModel contato =  _contatoRepository.ListarPorId(id);
+            return View(contato);
         }
 
-        public IActionResult Apagar()
+        public IActionResult Apagar(int id)
         {
-            return View();
+            ContatoModel contato = _contatoRepository.ListarPorId(id);
+            return View(contato);
+        }
+
+        public IActionResult Excluir(int id) // <===== Excluir
+        {
+            try
+            {
+                bool apagado =  _contatoRepository.Excluir(id); // <===== Apagar
+
+                if (apagado)
+                {
+                    TempData["MensagemSucesso"] = "Contato apagado com sucesso!";
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Ops, não conseguimos apagar seu contato!";
+                }
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception erro)
+            {
+
+                TempData["MensagemErro"] = $"Ops, não conseguimos apagar seu contato, tente novamente, detalhe do erro: {erro.Message}";
+
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public IActionResult Criar(ContatoModel contato)
         {
-            _contatoRepository.Adicionar(contato);
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _contatoRepository.Adicionar(contato); // <===== Adicionar
+
+                    TempData["MensagemSucesso"] = "Contato cadastrado com sucesso!";
+
+                    return RedirectToAction("Index");
+                }
+
+                return View(contato);
+            }
+            catch (Exception erro)
+            {
+
+                TempData["MensagemErro"] = $"Ops, não conseguimos cadastrar seu contato, tente novamente, detalhe do erro: {erro.Message}";
+
+                return RedirectToAction("Index");
+            }
             
-            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Alterar(ContatoModel contato) // <===== Alterar
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _contatoRepository.Atualizar(contato);
+
+                    TempData["MensagemSucesso"] = "Contato alterado com sucesso!";
+
+                    return RedirectToAction("Index");
+                }
+
+                return View("Editar", contato);
+            }
+            catch (Exception erro)
+            {
+
+                TempData["MensagemErro"] = $"Ops, não conseguimos atualizar seu contato, tente novamente, detalhe do erro: {erro.Message}";
+
+                return RedirectToAction("Index");
+            }
         }
     }
 }
